@@ -24,7 +24,7 @@ export class AppStack extends Stack {
     });
 
     const canary = new synthetics.Canary(this, 'MyCanary', {
-      schedule: synthetics.Schedule.rate(Duration.minutes(2)),
+      schedule: synthetics.Schedule.rate(Duration.minutes(45)),
       test: synthetics.Test.custom({
         code: synthetics.Code.fromInline(
 `const synthetics = require("Synthetics");
