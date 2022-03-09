@@ -38,24 +38,11 @@ export class AppStack extends Stack {
     const sg1 = new ec2.SecurityGroup(this, "SG1", { vpc: vpc1 });
 
     // subnet
-    const subnet = new ec2.Subnet(this, "subnet", {
-      availabilityZone: "us-east-1a",
-      cidrBlock: "10.0.0.0/24",
-      vpcId: vpc1.vpcId,
-    });
 
     // role1: role with subnet permissions
     const role1 = new iam.Role(this, "roleWithSubnetOnly", {
       assumedBy: new iam.AccountPrincipal(this.account),
     });
-    role1.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ["ec2:CreateNetworkInterface"],
-        resources: [
-          `arn:${this.partition}:ec2:${this.region}:${this.account}:subnet/${subnet.subnetId}`,
-        ],
-      })
-    );
     // role 2: role with networkinterface and subnet permissions
   }
 }
