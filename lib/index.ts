@@ -32,45 +32,6 @@ export class AppStack extends Stack {
       value: bucket.bucketName,
     });
 
-    const canary = new synthetics.Canary(this, "MyCanary", {
-      schedule: synthetics.Schedule.rate(Duration.minutes(50)),
-      test: synthetics.Test.custom({
-        code: synthetics.Code.fromInline(
-          `const synthetics = require("Synthetics");
-const log = require("SyntheticsLogger");
-
-const pageLoadBlueprint = async function () {
-  // Configure the stage of the API using environment variables
-  const url = "http://phillyactso.org";
-
-  const page = await synthetics.getPage();
-  const response = await page.goto(url, {
-    waitUntil: "domcontentloaded",
-    timeout: 30000,
-  });
-  // Wait for page to render. Increase or decrease wait time based on endpoint being monitored.
-  await page.waitFor(15000);
-  // This will take a screenshot that will be included in test output artifacts.
-  await synthetics.takeScreenshot("loaded", "loaded");
-  const pageTitle = await page.title();
-  log.info("Page title: " + pageTitle);
-  if (response.status() !== 200) {
-    throw "Failed to load page!";
-  }
-};
-
-exports.handler = async () => {
-  return await pageLoadBlueprint();
-};`
-        ),
-        handler: "index.handler",
-      }),
-      runtime: synthetics.Runtime.SYNTHETICS_NODEJS_PUPPETEER_3_1,
-      environmentVariables: {
-        stage: "prod",
-      },
-    });
-
     const vpc1 = new ec2.Vpc(this, "VPC1");
 
     // security group
